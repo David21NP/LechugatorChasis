@@ -11,13 +11,13 @@ namespace Lechugator
     double filteredData = 0;
     double prevValue = 0;
 
-  public:
     double ts = 0;
     double f_cut = 0;
 
     double a1 = 0;
     double b0 = 0;
     double b1 = 0;
+  public:
 
     LowpassFilter(const double &_ts, const double &_cutFreq);
     ~LowpassFilter();

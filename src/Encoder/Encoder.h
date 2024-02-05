@@ -8,12 +8,29 @@
 
 #include "../Filters/LowpassFilter.h"
 
-#define TIMER1_INTERVAL_MS 1
+#define TIMER_ENCODER_INTERVAL_MS 1
 
 #define RPM_TO_RADS ((2.0 * PI) / 60.0)
+#define RADS_TO_RPM (60.0 / (2.0 * PI))
 
 namespace Lechugator
 {
+  struct EncoderPins
+  {
+    PinName pinPulso;
+    PinName pinVuelta;
+
+    EncoderPins()
+    {
+    }
+    EncoderPins(PinName _pinPulso) : pinPulso(_pinPulso)
+    {
+    }
+    EncoderPins(PinName _pinPulso, PinName _pinVuelta) : pinPulso(_pinPulso), pinVuelta(_pinVuelta)
+    {
+    }
+  };
+
   class Encoder
   {
   private:
@@ -23,62 +40,26 @@ namespace Lechugator
     double w = 0;
     double rpm = 0;
 
-    // uint32_t timeDelta = 100;
     elapsedMicros timeDelta = 0;
     // elapsedMillis timeDelta = 0;
 
-    // LowpassFilter filter1 = LowpassFilter(0.969, 0.0155);
-    // LowpassFilter filter2 = LowpassFilter(0.969, 0.0155);
-
-    // LowpassFilter filter3 = LowpassFilter(0.969, 0.0155);
-    // LowpassFilter filter4 = LowpassFilter(0.975, 0.00455);
-
-    std::array<std::array<LowpassFilter, 5>, 4> filters = {{
-      {
-        // LowpassFilter(TIMER1_INTERVAL_MS * 1000, 10),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 2),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 1),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.7),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.5)
-      },
-      {
-        // LowpassFilter(TIMER1_INTERVAL_MS * 1000, 10),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 2),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 1),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.7),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.5)
-      },
-      {
-        // LowpassFilter(TIMER1_INTERVAL_MS * 1000, 10),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 2),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 1),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.7),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.5)
-      },
-      {
-        // LowpassFilter(TIMER1_INTERVAL_MS * 1000, 10),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 2),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 1),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.7),
-        LowpassFilter(TIMER1_INTERVAL_MS * 1000, 0.5)
-      }
-    }};
-    // LowpassFilter filter1 = LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5);
-    // LowpassFilter filter2 = LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5);
-
-    // LowpassFilter filter3 = LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5);
-    // LowpassFilter filter4 = LowpassFilter(TIMER1_INTERVAL_MS * 1000, 5);
+    std::vector<LowpassFilter> filters = {
+        {
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.3),
+        }};
 
     // Pines
-    PinName pinPulso;
-    PinName pinVuelta;
+    EncoderPins encoderPins;
+
   public:
-    Encoder(PinName _pinPulso, const unsigned int &_motor_num);
-    Encoder(PinName _pinPulso, PinName _pinVuelta, const unsigned int &_motor_num);
+    Encoder();
+    Encoder(EncoderPins _encoderPins, const unsigned int &_motor_num);
     ~Encoder();
 
     void count();

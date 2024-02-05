@@ -2,11 +2,10 @@
 
 namespace Lechugator
 {
-  // Encoder::Encoder(const unsigned int &_motor_num) : motor_num(_motor_num)
-  Encoder::Encoder(PinName _pinPulso, const unsigned int &_motor_num) : pinPulso(_pinPulso), motor_num(_motor_num)
+  Encoder::Encoder()
   {
   }
-  Encoder::Encoder(PinName _pinPulso, PinName _pinVuelta, const unsigned int &_motor_num) : pinPulso(_pinPulso), pinVuelta(_pinVuelta), motor_num(_motor_num)
+  Encoder::Encoder(EncoderPins _encoderPins, const unsigned int &_motor_num) : encoderPins(_encoderPins), motor_num(_motor_num)
   {
   }
 
@@ -16,7 +15,9 @@ namespace Lechugator
 
   void Encoder::init()
   {
-    attachInterrupt(digitalPinToInterrupt(pinPulso), std::bind(&Lechugator::Encoder::count, this), FALLING);
+    attachInterrupt(digitalPinToInterrupt(encoderPins.pinPulso), std::bind(&Lechugator::Encoder::count, this), FALLING);
+    Serial.print(F("Starting Encoder OK: "));
+    Serial.println(motor_num);
   }
 
   void Encoder::count()
@@ -29,7 +30,7 @@ namespace Lechugator
     rpm = (((double)counter) / (double)timeDelta) * 564971.0 * 2.0;
 
     // Filtro pasabajos
-    for (auto &&filt : filters.at(motor_num - 1))
+    for (auto &&filt : filters)
     {
       rpm = filt.filter(rpm);
     }

@@ -5,5 +5,6 @@
 #include "../Encoder/Encoder.h"
 #include "../Timers/TimerEncoders.h"
 #include "../Serial/Serial.h"
+#include "../Motors/Motor.h"
 
 #endif
