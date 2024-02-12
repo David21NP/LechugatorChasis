@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include "../Encoder/Encoder.h"
 #include "../Controllers/PIDController.h"
-#include "../Controllers/StateSpace/StateSpace.h"
 #include "../Polyfill/PinMode.h"
 #include "../Polyfill/Analog.h"
 
@@ -36,7 +35,6 @@ namespace Lechugator
 
     Encoder encoder;
     PIDController pidController;
-    StateSpace stateSpaceController;
 
     // Pines
     MotorPins motorPins;
@@ -46,20 +44,17 @@ namespace Lechugator
         MotorPins _motorPins,
         EncoderPins _encoderPins,
         PIDControllerConst _pidControllerConst,
-        StateSpaceConst _stateSpaceConst,
         const unsigned int &_motor_num);
     Motor(
         MotorPins _motorPins,
         EncoderPins _encoderPins,
         PIDControllerConst _pidControllerConst,
-        StateSpaceConst _stateSpaceConst,
         const unsigned int &_motor_num,
         const uint8_t &_maxPwm);
     Motor(
         MotorPins _motorPins,
         EncoderPins _encoderPins,
         PIDControllerConst _pidControllerConst,
-        StateSpaceConst _stateSpaceConst,
         const unsigned int &_motor_num,
         const uint8_t &_maxPwm,
         const uint8_t &_minPwm);
@@ -67,7 +62,6 @@ namespace Lechugator
 
     Encoder &getEncoder();
     PIDController &getPIDController();
-    StateSpace &getStateSpaceController();
 
     void init();
 

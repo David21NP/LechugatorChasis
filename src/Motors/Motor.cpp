@@ -7,37 +7,31 @@ namespace Lechugator
       MotorPins _motorPins,
       EncoderPins _encoderPins,
       PIDControllerConst _pidControllerConst,
-      StateSpaceConst _stateSpaceConst,
       const unsigned int &_motor_num) : motorPins(_motorPins), motor_num(_motor_num)
   {
     encoder = Encoder(_encoderPins, _motor_num);
     pidController = PIDController(_pidControllerConst);
-    stateSpaceController = StateSpace(_stateSpaceConst);
   }
   Motor::Motor(
       MotorPins _motorPins,
       EncoderPins _encoderPins,
       PIDControllerConst _pidControllerConst,
-      StateSpaceConst _stateSpaceConst,
       const unsigned int &_motor_num,
       const uint8_t &_maxPwm) : motorPins(_motorPins), motor_num(_motor_num), maxPwm(_maxPwm)
   {
     encoder = Encoder(_encoderPins, _motor_num);
     pidController = PIDController(_pidControllerConst);
-    stateSpaceController = StateSpace(_stateSpaceConst);
   }
   Motor::Motor(
       MotorPins _motorPins,
       EncoderPins _encoderPins,
       PIDControllerConst _pidControllerConst,
-      StateSpaceConst _stateSpaceConst,
       const unsigned int &_motor_num,
       const uint8_t &_maxPwm,
       const uint8_t &_minPwm) : motorPins(_motorPins), motor_num(_motor_num), maxPwm(_maxPwm), minPwm(_minPwm)
   {
     encoder = Encoder(_encoderPins, _motor_num);
     pidController = PIDController(_pidControllerConst);
-    stateSpaceController = StateSpace(_stateSpaceConst);
   }
   Motor::~Motor()
   {
@@ -50,10 +44,6 @@ namespace Lechugator
   PIDController &Motor::getPIDController()
   {
     return pidController;
-  }
-  StateSpace &Motor::getStateSpaceController()
-  {
-    return stateSpaceController;
   }
 
   void Motor::init()
@@ -113,7 +103,6 @@ namespace Lechugator
   void Motor::moveW(const double &_w)
   {
     pidController.setDesiredValue(_w);
-    stateSpaceController.setDesiredValue(_w);
   }
 
   void Motor::calcIteration()
@@ -124,15 +113,8 @@ namespace Lechugator
     // } else {
     //   move((uint8_t)fabs(pidController.calcControlSignal((double)1 * encoder.getW())));
     // }
-    // stateSpaceController.calcStates(encoder.getCounter());
-    // if (stateSpaceController.getDesiredValue() == 0.0)
-    // {
-    //   move(0);
-    // } else {
-    //   move((uint8_t)fabs(stateSpaceController.getControlSignal()));
-    // }
     // move(20);
-    move(stateSpaceController.getDesiredValue());
+    move(pidController.getDesiredValue());
   }
 
   uint8_t Motor::getDir()
