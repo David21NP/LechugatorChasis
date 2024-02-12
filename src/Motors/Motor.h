@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include "../Encoder/Encoder.h"
 #include "../Controllers/PIDController.h"
+#include "../Controllers/StateSpace/StateSpace.h"
+#include "../Polyfill/PinMode.h"
+#include "../Polyfill/Analog.h"
 
 #define TIMER_MOTOR_INTERVAL_MS 10
 
@@ -28,22 +31,43 @@ namespace Lechugator
   private:
     unsigned int motor_num = 0;
     uint8_t maxPwm = 100;
-    uint8_t minPwm = 0;
+    uint8_t minPwm = 100;
     uint8_t dir = 0;
 
     Encoder encoder;
     PIDController pidController;
+    StateSpace stateSpaceController;
 
     // Pines
     MotorPins motorPins;
+
   public:
-    Motor(MotorPins _motorPins, EncoderPins _encoderPins, PIDControllerConst _pidControllerConst, const unsigned int &_motor_num);
-    Motor(MotorPins _motorPins, EncoderPins _encoderPins, PIDControllerConst _pidControllerConst, const unsigned int &_motor_num, const uint8_t &_maxPwm);
-    Motor(MotorPins _motorPins, EncoderPins _encoderPins, PIDControllerConst _pidControllerConst, const unsigned int &_motor_num, const uint8_t &_maxPwm, const uint8_t &_minPwm);
+    Motor(
+        MotorPins _motorPins,
+        EncoderPins _encoderPins,
+        PIDControllerConst _pidControllerConst,
+        StateSpaceConst _stateSpaceConst,
+        const unsigned int &_motor_num);
+    Motor(
+        MotorPins _motorPins,
+        EncoderPins _encoderPins,
+        PIDControllerConst _pidControllerConst,
+        StateSpaceConst _stateSpaceConst,
+        const unsigned int &_motor_num,
+        const uint8_t &_maxPwm);
+    Motor(
+        MotorPins _motorPins,
+        EncoderPins _encoderPins,
+        PIDControllerConst _pidControllerConst,
+        StateSpaceConst _stateSpaceConst,
+        const unsigned int &_motor_num,
+        const uint8_t &_maxPwm,
+        const uint8_t &_minPwm);
     ~Motor();
 
     Encoder &getEncoder();
     PIDController &getPIDController();
+    StateSpace &getStateSpaceController();
 
     void init();
 

@@ -1,11 +1,10 @@
-#ifndef LECHUGATOR_TIMER_ENCODER_H
-#define LECHUGATOR_TIMER_ENCODER_H
+#ifndef LECHUGATOR_TIMER_MUESTREO_H
+#define LECHUGATOR_TIMER_MUESTREO_H
 
 #include <Arduino.h>
 #include <functional>
 
 #include "../Motors/Motor.h"
-#include "../config/Pins.h"
 
 // #include <STM32_ISR_Timer.h>
 #include <STM32TimerInterrupt.h>
@@ -13,19 +12,23 @@
 
 namespace Lechugator
 {
-  class TimerEncoders
+  class TimerMuestreo
   {
   private:
     // STM32_ISR_Timer ISR_Timer;
-    HardwareTimer TimerEncoder = HardwareTimer(TIMER_ENCODER_DEF);
+    STM32Timer ITimerEncoder = STM32Timer(TIMER_MUESTREO_DEF);
     std::array<Motor, 4> &motors;
 
   public:
-    TimerEncoders(std::array<Motor, 4> &);
-    ~TimerEncoders();
+    TimerMuestreo(std::array<Motor, 4> &);
+    ~TimerMuestreo();
 
     void init();
-    void run();
+    void timerHandler();
+
+    void readEncoder();
+    void moveMotor();
+    void customCall() {}
   };
   
 } // namespace Lechugator

@@ -2,7 +2,7 @@
 
 namespace Lechugator
 {
-  TimerEncoders::TimerEncoders(std::array<Motor, 4> &_motors) : motors(_motors), ITimerEncoder(STM32Timer(TIMER_DEF))
+  TimerEncoders::TimerEncoders(std::array<Motor, 4> &_motors) : motors(_motors)
   {
   }
 
@@ -12,52 +12,21 @@ namespace Lechugator
 
   void TimerEncoders::init()
   {
-    if (
-        ITimerEncoder.attachInterruptInterval(
-            // HW_TIMER_INTERVAL_US,
-            TIMER_ENCODER_INTERVAL_MS * 1000,
-            std::bind(&TimerEncoders::timerHandler, this)))
-    {
-      Serial.print(F("Starting ITimer1 OK, millis() = "));
-      Serial.println(millis());
-    }
-    else
-    {
-      Serial.println(F("Can't set ITimer1. Select another freq. or timer"));
-    }
-    Serial.println("Ejemplo 1");
+    TimerEncoder.setPrescaleFactor(PRESCALER_FACTOR_ENCODERS);
+    TimerEncoder.setOverflow(OVERFLOW_FACTOR_ENCODERS); // Max Period value to have the largest possible time to detect rising edge and avoid timer rollover
 
-    // ISR_Timer.setInterval(TIMER_ENCODER_INTERVAL_MS * 1000, std::bind(&TimerEncoders::readEncoder, this));
-    // ISR_Timer.setInterval(TIMER_MOTOR_INTERVAL_MS * 1000, std::bind(&TimerEncoders::moveMotor, this));
+    // Compute this scale factor only once
+    double input_freq = (double)TimerEncoder.getTimerClkFreq() / (double)TimerEncoder.getPrescaleFactor();
+
+    Serial.println((String) "FreqTimer = " + TimerEncoder.getTimerClkFreq());
+    Serial.println((String) "Prescaler = " + TimerEncoder.getPrescaleFactor());
+    Serial.println((String) "Overflow = " + TimerEncoder.getOverflow());
+    Serial.println((String) "InputFreq = " + input_freq);
+    Serial.println();
   }
-
-  void TimerEncoders::timerHandler()
+  void TimerEncoders::run()
   {
-    // ISR_Timer.run();
-    readEncoder();
-    moveMotor();
-  }
-
-  void TimerEncoders::readEncoder()
-  {
-    for (auto &&motor : motors)
-    {
-      motor.getEncoder().calcSpeeds();
-    }
-  }
-
-  void TimerEncoders::moveMotor()
-  {
-    for (auto &&motor : motors)
-    {
-      motor.calcIteration();
-    }
-
-    // Serial.print(20);
-    // Serial.print(motors.at(3).getPIDController().getDesiredValue());
-    // Serial.print(" ");
-    // Serial.print(motors.at(3).getEncoder().getW());
-    // Serial.println();
+    TimerEncoder.resume();
   }
 
 } // namespace Lechugator

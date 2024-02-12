@@ -4,14 +4,11 @@
 #include <Arduino.h>
 #include <functional>
 #include <elapsedMillis.h>
-// #include <SimpleKalmanFilter.h>
 
 #include "../Filters/LowpassFilter.h"
 
-#define TIMER_ENCODER_INTERVAL_MS 1
+#include "../config/Pins.h"
 
-#define RPM_TO_RADS ((2.0 * PI) / 60.0)
-#define RADS_TO_RPM (60.0 / (2.0 * PI))
 
 namespace Lechugator
 {
@@ -37,37 +34,40 @@ namespace Lechugator
     unsigned int motor_num = 0;
     uint32_t counter = 0;
 
-    double w = 0;
-    double rpm = 0;
+    HardwareTimer TimerReader = HardwareTimer(TIMER_ENCODER_DEF);
+    uint32_t channel;
+
+    uint32_t currentCapture = 0;
+    uint32_t lastCapture = 0;
+    uint32_t overFlow = 0xFFFFFFFF;
+
+    double filteredFreq = 0;
+    double input_freq = 0;
 
     elapsedMicros timeDelta = 0;
     // elapsedMillis timeDelta = 0;
 
     std::vector<LowpassFilter> filters = {
         {
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.3),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 1),
+            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 1),
+            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
+            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
+            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
+            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
+            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.3),
         }};
 
     // Pines
     EncoderPins encoderPins;
-
   public:
     Encoder();
     Encoder(EncoderPins _encoderPins, const unsigned int &_motor_num);
     ~Encoder();
 
-    void count();
-
-    void calcSpeeds();
     void init();
+    void calcSpeeds();
 
-    unsigned int getMotorNum();
     double getW();
     double getRPM();
     double getVelLin(const double &);

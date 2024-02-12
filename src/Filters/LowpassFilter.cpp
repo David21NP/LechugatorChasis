@@ -5,7 +5,7 @@ namespace Lechugator
   LowpassFilter::LowpassFilter(const double &_ts, const double &_cutFreq)
   {
     f_cut = _cutFreq;
-    const double w0 = 2 * PI * _cutFreq;
+    const double w0 = TWO_PI * _cutFreq;
     ts = _ts / 1000000.0;
 
     a1 = -((ts * w0) - 2) / ((ts * w0) + 2);

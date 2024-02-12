@@ -15,49 +15,69 @@ namespace Lechugator
 
   void Encoder::init()
   {
-    attachInterrupt(digitalPinToInterrupt(encoderPins.pinPulso), std::bind(&Lechugator::Encoder::count, this), FALLING);
-    Serial.print(F("Starting Encoder OK: "));
-    Serial.println(motor_num);
-  }
+    String initStatus = "";
 
-  void Encoder::count()
-  {
-    counter++;
+    try
+    {
+      channel = STM_PIN_CHANNEL(pinmap_function(encoderPins.pinPulso, PinMap_PWM));
+
+      TimerReader.setMode(channel, TIMER_INPUT_CAPTURE_RISING, encoderPins.pinPulso);
+
+      TimerReader.attachInterrupt(channel, std::bind(&Encoder::calcSpeeds, this));
+
+      input_freq = (double)TimerReader.getTimerClkFreq() / (double)TimerReader.getPrescaleFactor();
+      overFlow = TimerReader.getOverflow();
+
+      initStatus = "Ok";
+    }
+    catch (const std::exception &e)
+    {
+      // initStatus = "Fail";
+      initStatus = e.what();
+    }
+
+    Serial.print((String) "Starting Encoder [" + motor_num + "] Status: " + initStatus);
+
+    pinMode(encoderPins.pinVuelta, INPUT);
   }
 
   void Encoder::calcSpeeds()
   {
-    rpm = (((double)counter) / (double)timeDelta) * 564971.0 * 2.0;
-
-    // Filtro pasabajos
+    currentCapture = TimerReader.getCaptureCompare(channel);
+    if (currentCapture > lastCapture)
+    {
+      if ((currentCapture - lastCapture) > 1)
+      {
+        filteredFreq = (double)input_freq / (double)(currentCapture - lastCapture);
+      }
+    }
+    if (currentCapture <= lastCapture)
+    {
+      if (filteredFreq <= 7)
+      {
+        filteredFreq = (double)input_freq / (double)(overFlow + currentCapture - lastCapture);
+      }
+    }
     for (auto &&filt : filters)
     {
-      rpm = filt.filter(rpm);
+      filteredFreq = filt.filter(filteredFreq);
     }
 
-    w = rpm * RPM_TO_RADS;
-
-    //--------------------------- Contdor de pulsos a 0 ----------------------------------------
-    counter = 0;
-    //--------------------------- cambio del muestreo anterior----------------------------------
-    timeDelta = 0;
+    lastCapture = currentCapture;
   }
 
-  unsigned int Encoder::getMotorNum()
-  {
-    return motor_num;
-  }
   double Encoder::getW()
   {
-    return w;
+    return filteredFreq * (TWO_PI / 15);
   }
   double Encoder::getRPM()
   {
-    return rpm;
+    return filteredFreq * 564971.0 * 2.0;
+    ;
   }
   double Encoder::getVelLin(const double &radius)
   {
-    return w * radius;
+    return filteredFreq * (TWO_PI / 15) * radius;
   }
 
 } // namespace Lechugator

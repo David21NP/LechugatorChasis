@@ -1,8 +1,6 @@
 #ifndef LOWPASS_FILTER_H
 #define LOWPASS_FILTER_H
 
-#define PI 3.1415926535897932384626433832795
-
 namespace Lechugator
 {
   class LowpassFilter
