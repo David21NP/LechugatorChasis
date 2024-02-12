@@ -17,26 +17,16 @@ namespace Lechugator
   {
     String initStatus = "";
 
-    try
-    {
-      channel = STM_PIN_CHANNEL(pinmap_function(encoderPins.pinPulso, PinMap_PWM));
+    channel = STM_PIN_CHANNEL(pinmap_function(encoderPins.pinPulso, PinMap_PWM));
 
-      TimerReader.setMode(channel, TIMER_INPUT_CAPTURE_RISING, encoderPins.pinPulso);
+    TimerReader.setMode(channel, TIMER_INPUT_CAPTURE_RISING, encoderPins.pinPulso);
 
-      TimerReader.attachInterrupt(channel, std::bind(&Encoder::calcSpeeds, this));
+    TimerReader.attachInterrupt(channel, std::bind(&Encoder::calcSpeeds, this));
 
-      input_freq = (double)TimerReader.getTimerClkFreq() / (double)TimerReader.getPrescaleFactor();
-      overFlow = TimerReader.getOverflow();
+    input_freq = (double)TimerReader.getTimerClkFreq() / (double)TimerReader.getPrescaleFactor();
+    overFlow = TimerReader.getOverflow();
 
-      initStatus = "Ok";
-    }
-    catch (const std::exception &e)
-    {
-      // initStatus = "Fail";
-      initStatus = e.what();
-    }
-
-    Serial.print((String) "Starting Encoder [" + motor_num + "] Status: " + initStatus);
+    Serial.print((String) "Starting Encoder [" + motor_num + "] Status: Ok");
 
     pinMode(encoderPins.pinVuelta, INPUT);
   }

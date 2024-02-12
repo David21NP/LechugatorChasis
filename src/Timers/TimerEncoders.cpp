@@ -2,7 +2,7 @@
 
 namespace Lechugator
 {
-  TimerEncoders::TimerEncoders(std::array<Motor, 4> &_motors) : motors(_motors)
+  TimerEncoders::TimerEncoders()
   {
   }
 

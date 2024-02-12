@@ -1,6 +1,8 @@
 #ifndef LOWPASS_FILTER_H
 #define LOWPASS_FILTER_H
 
+#include "../config/Pins.h"
+
 namespace Lechugator
 {
   class LowpassFilter

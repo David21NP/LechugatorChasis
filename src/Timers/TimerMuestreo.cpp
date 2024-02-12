@@ -39,7 +39,7 @@ namespace Lechugator
   {
     for (auto &&motor : motors)
     {
-      Serial.print(motor.getPIDController().getDesiredValue());
+      Serial.print(motor.getDigitalController().getDesiredValue());
       Serial.print(" ");
       Serial.print(motor.getEncoder().getW());
       Serial.print(" ");

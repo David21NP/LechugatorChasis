@@ -5,6 +5,7 @@
 #include "../Filters/LowpassFilter.h"
 #include "../config/Pins.h"
 #include "../Encoder/Encoder.h"
+#include "../Timers/TimerEncoders.h"
 #include "../Timers/TimerMuestreo.h"
 #include "../Serial/Serial.h"
 #include "../Motors/Motor.h"

@@ -1,4 +1,5 @@
-#include <wiring_constants.h>
+#include <Arduino.h>
+// #include <wiring_constants.h>
 
 #define TIMER_ENCODER_DEF TIM1
 #define PRESCALER_FACTOR_ENCODERS 0xFFFFFFFF

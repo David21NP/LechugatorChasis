@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include "../Encoder/Encoder.h"
-#include "../Controllers/PIDController.h"
+#include "../Controllers/DigitalController.h"
 #include "../Polyfill/PinMode.h"
 #include "../Polyfill/Analog.h"
 
@@ -14,13 +14,13 @@ namespace Lechugator
   struct MotorPins
   {
     PinName pinEN;
-    PinName pinPwmR;
-    PinName pinPwmL;
+    PinName pinPwmCW;
+    PinName pinPwmCCW;
 
     MotorPins()
     {
     }
-    MotorPins(PinName _pinEN, PinName _pinPwmR, PinName _pinPwmL) : pinEN(_pinEN), pinPwmR(_pinPwmR), pinPwmL(_pinPwmL)
+    MotorPins(PinName _pinEN, PinName _pinPwmCW, PinName _pinPwmCCW) : pinEN(_pinEN), pinPwmCW(_pinPwmCW), pinPwmCCW(_pinPwmCCW)
     {
     }
   };
@@ -34,7 +34,7 @@ namespace Lechugator
     uint8_t dir = 0;
 
     Encoder encoder;
-    PIDController pidController;
+    DigitalController digitalController;
 
     // Pines
     MotorPins motorPins;
@@ -43,25 +43,25 @@ namespace Lechugator
     Motor(
         MotorPins _motorPins,
         EncoderPins _encoderPins,
-        PIDControllerConst _pidControllerConst,
+        DigitalController _digitalController,
         const unsigned int &_motor_num);
     Motor(
         MotorPins _motorPins,
         EncoderPins _encoderPins,
-        PIDControllerConst _pidControllerConst,
+        DigitalController _digitalController,
         const unsigned int &_motor_num,
         const uint8_t &_maxPwm);
     Motor(
         MotorPins _motorPins,
         EncoderPins _encoderPins,
-        PIDControllerConst _pidControllerConst,
+        DigitalController _digitalController,
         const unsigned int &_motor_num,
         const uint8_t &_maxPwm,
         const uint8_t &_minPwm);
     ~Motor();
 
     Encoder &getEncoder();
-    PIDController &getPIDController();
+    DigitalController &getDigitalController();
 
     void init();
 

@@ -6,32 +6,32 @@ namespace Lechugator
   Motor::Motor(
       MotorPins _motorPins,
       EncoderPins _encoderPins,
-      PIDControllerConst _pidControllerConst,
+      DigitalController _digitalController,
       const unsigned int &_motor_num) : motorPins(_motorPins), motor_num(_motor_num)
   {
     encoder = Encoder(_encoderPins, _motor_num);
-    pidController = PIDController(_pidControllerConst);
+    digitalController = _digitalController;
   }
   Motor::Motor(
       MotorPins _motorPins,
       EncoderPins _encoderPins,
-      PIDControllerConst _pidControllerConst,
+      DigitalController _digitalController,
       const unsigned int &_motor_num,
       const uint8_t &_maxPwm) : motorPins(_motorPins), motor_num(_motor_num), maxPwm(_maxPwm)
   {
     encoder = Encoder(_encoderPins, _motor_num);
-    pidController = PIDController(_pidControllerConst);
+    digitalController = _digitalController;
   }
   Motor::Motor(
       MotorPins _motorPins,
       EncoderPins _encoderPins,
-      PIDControllerConst _pidControllerConst,
+      DigitalController _digitalController,
       const unsigned int &_motor_num,
       const uint8_t &_maxPwm,
       const uint8_t &_minPwm) : motorPins(_motorPins), motor_num(_motor_num), maxPwm(_maxPwm), minPwm(_minPwm)
   {
     encoder = Encoder(_encoderPins, _motor_num);
-    pidController = PIDController(_pidControllerConst);
+    digitalController = _digitalController;
   }
   Motor::~Motor()
   {
@@ -41,19 +41,19 @@ namespace Lechugator
   {
     return encoder;
   }
-  PIDController &Motor::getPIDController()
+  DigitalController &Motor::getDigitalController()
   {
-    return pidController;
+    return digitalController;
   }
 
   void Motor::init()
   {
     // pinMode(motorPins.pinEN, OUTPUT);
-    // pinMode(motorPins.pinPwmR, OUTPUT);
-    // pinMode(motorPins.pinPwmL, OUTPUT);
+    // pinMode(motorPins.pinPwmCW, OUTPUT);
+    // pinMode(motorPins.pinPwmCCW, OUTPUT);
     Polyfill::pinMode(motorPins.pinEN, OUTPUT);
-    Polyfill::pinMode(motorPins.pinPwmR, OUTPUT);
-    Polyfill::pinMode(motorPins.pinPwmL, OUTPUT);
+    Polyfill::pinMode(motorPins.pinPwmCW, OUTPUT);
+    Polyfill::pinMode(motorPins.pinPwmCCW, OUTPUT);
 
     Serial.print(F("Starting Motor OK: "));
     Serial.println(motor_num);
@@ -67,30 +67,30 @@ namespace Lechugator
     {
       dir = 1;
       digitalWriteFast(motorPins.pinEN, HIGH);
-      // analogWrite(motorPins.pinPwmR, constrain(abs(_currPwm), 0, maxPwm));
-      Polyfill::analogWrite(motorPins.pinPwmR, constrain(abs(_currPwm), 0, maxPwm));
-      // analogWrite(motorPins.pinPwmL, 0);
-      Polyfill::analogWrite(motorPins.pinPwmL, 0);
+      // analogWrite(motorPins.pinPwmCW, constrain(abs(_currPwm), 0, maxPwm));
+      Polyfill::analogWrite(motorPins.pinPwmCW, constrain(abs(_currPwm), 0, maxPwm));
+      // analogWrite(motorPins.pinPwmCCW, 0);
+      Polyfill::analogWrite(motorPins.pinPwmCCW, 0);
       return;
     }
     if (_currPwm < 0)
     {
       dir = -1;
       digitalWriteFast(motorPins.pinEN, HIGH);
-      // analogWrite(motorPins.pinPwmR, 0);
-      Polyfill::analogWrite(motorPins.pinPwmR, 0);
-      // analogWrite(motorPins.pinPwmL, constrain(abs(_currPwm), 0, minPwm));
-      Polyfill::analogWrite(motorPins.pinPwmL, constrain(abs(_currPwm), 0, minPwm));
+      // analogWrite(motorPins.pinPwmCW, 0);
+      Polyfill::analogWrite(motorPins.pinPwmCW, 0);
+      // analogWrite(motorPins.pinPwmCCW, constrain(abs(_currPwm), 0, minPwm));
+      Polyfill::analogWrite(motorPins.pinPwmCCW, constrain(abs(_currPwm), 0, minPwm));
       return;
     }
     if (_currPwm == 0)
     {
       dir = 0;
       digitalWriteFast(motorPins.pinEN, LOW);
-      // analogWrite(motorPins.pinPwmR, 0);
-      Polyfill::analogWrite(motorPins.pinPwmR, 0);
-      // analogWrite(motorPins.pinPwmL, 0);
-      Polyfill::analogWrite(motorPins.pinPwmL, 0);
+      // analogWrite(motorPins.pinPwmCW, 0);
+      Polyfill::analogWrite(motorPins.pinPwmCW, 0);
+      // analogWrite(motorPins.pinPwmCCW, 0);
+      Polyfill::analogWrite(motorPins.pinPwmCCW, 0);
       return;
     }
   }
@@ -102,19 +102,19 @@ namespace Lechugator
 
   void Motor::moveW(const double &_w)
   {
-    pidController.setDesiredValue(_w);
+    digitalController.setDesiredValue(_w);
   }
 
   void Motor::calcIteration()
   {
-    // if (pidController.getDesiredValue() == 0.0)
+    // if (digitalController.getDesiredValue() == 0.0)
     // {
     //   move(0);
     // } else {
-    //   move((uint8_t)fabs(pidController.calcControlSignal((double)1 * encoder.getW())));
+    //   move((uint8_t)fabs(digitalController.calcControlSignal((double)1 * encoder.getW())));
     // }
     // move(20);
-    move(pidController.getDesiredValue());
+    move(digitalController.getDesiredValue());
   }
 
   uint8_t Motor::getDir()

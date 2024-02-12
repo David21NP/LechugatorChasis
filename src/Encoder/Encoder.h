@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <functional>
+#include <exception>
 #include <elapsedMillis.h>
 
 #include "../Filters/LowpassFilter.h"
