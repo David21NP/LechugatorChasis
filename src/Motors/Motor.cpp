@@ -46,7 +46,7 @@ namespace Lechugator
     return digitalController;
   }
 
-  void Motor::init()
+  void Motor::init(HardwareTimer *_timerReader)
   {
     // pinMode(motorPins.pinEN, OUTPUT);
     // pinMode(motorPins.pinPwmCW, OUTPUT);
@@ -55,10 +55,14 @@ namespace Lechugator
     Polyfill::pinMode(motorPins.pinPwmCW, OUTPUT);
     Polyfill::pinMode(motorPins.pinPwmCCW, OUTPUT);
 
+    #if DEBUG_LECHUGATOR
+    Serial.println("==============- MOTORES ================");
     Serial.print(F("Starting Motor OK: "));
     Serial.println(motor_num);
+    Serial.println("========================================");
+    #endif;
 
-    encoder.init();
+    encoder.init(_timerReader);
   }
 
   void Motor::move(const int8_t &_currPwm)
@@ -107,14 +111,13 @@ namespace Lechugator
 
   void Motor::calcIteration()
   {
-    // if (digitalController.getDesiredValue() == 0.0)
-    // {
-    //   move(0);
-    // } else {
-    //   move((uint8_t)fabs(digitalController.calcControlSignal((double)1 * encoder.getW())));
-    // }
-    // move(20);
-    move(digitalController.getDesiredValue());
+    if (digitalController.getDesiredValue() == 0.0)
+    {
+      move(0);
+    } else {
+      move((uint8_t)fabs(digitalController.calcControlSignal(encoder.getW())));
+    }
+    // move(digitalController.getDesiredValue());
   }
 
   uint8_t Motor::getDir()

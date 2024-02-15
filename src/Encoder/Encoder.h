@@ -10,7 +10,6 @@
 
 #include "../config/Pins.h"
 
-
 namespace Lechugator
 {
   struct EncoderPins
@@ -35,7 +34,8 @@ namespace Lechugator
     unsigned int motor_num = 0;
     uint32_t counter = 0;
 
-    HardwareTimer TimerReader = HardwareTimer(TIMER_ENCODER_DEF);
+    HardwareTimer *timerReader;
+    // HardwareTimer timerReader = HardwareTimer(TIMER_ENCODER_DEF);
     uint32_t channel;
 
     uint32_t currentCapture = 0;
@@ -45,30 +45,35 @@ namespace Lechugator
     double filteredFreq = 0;
     double input_freq = 0;
 
-    elapsedMicros timeDelta = 0;
-    // elapsedMillis timeDelta = 0;
+    // elapsedMicros timeDelta = 0;
+    elapsedMillis timeDelta = 0;
 
     std::vector<LowpassFilter> filters = {
         {
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 1),
-            LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 1),
-            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
-            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.8),
-            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
-            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.5),
-            // LowpassFilter(TIMER_ENCODER_INTERVAL_MS * 1000, 0.3),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 500),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 100),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 50),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 25),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 10),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 5),
+            // LowpassFilter(TIMER_MUESTREO_INTERVAL_MS * 1000, 1),
         }};
 
     // Pines
     EncoderPins encoderPins;
+
   public:
     Encoder();
     Encoder(EncoderPins _encoderPins, const unsigned int &_motor_num);
     ~Encoder();
 
-    void init();
+    void init(HardwareTimer *_timerReader);
     void calcSpeeds();
+    void filterFreq();
 
+    void serTimer();
+
+    double getFreq();
     double getW();
     double getRPM();
     double getVelLin(const double &);

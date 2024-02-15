@@ -19,13 +19,13 @@ namespace Lechugator
     Polyfill::pinMode(gPin, OUTPUT);
     Polyfill::pinMode(bPin, OUTPUT);
 
-    // digitalWriteFast(rPin, LED_OFF);
-    // digitalWriteFast(gPin, LED_OFF);
-    // digitalWriteFast(bPin, LED_OFF);
+    digitalWriteFast(rPin, LED_OFF);
+    digitalWriteFast(gPin, LED_OFF);
+    digitalWriteFast(bPin, LED_OFF);
 
-    digitalWriteFast(rPin, LED_ON);
-    digitalWriteFast(gPin, LED_ON);
-    digitalWriteFast(bPin, LED_ON);
+    // digitalWriteFast(rPin, LED_ON);
+    // digitalWriteFast(gPin, LED_ON);
+    // digitalWriteFast(bPin, LED_ON);
 
     Serial.print(F("Starting Leds OK."));
     Serial.println();
@@ -33,12 +33,51 @@ namespace Lechugator
 
   void LedsRGB::prenderBlanco()
   {
-    if (timeDelta > 1000) {
-      digitalToggleFast(rPin);
-      digitalToggleFast(gPin);
-      digitalToggleFast(bPin);
-      timeDelta = 0;
-    }
+    digitalWriteFast(rPin, LED_ON);
+    digitalWriteFast(gPin, LED_ON);
+    digitalWriteFast(bPin, LED_ON);
+  }
+  void LedsRGB::prenderRojo()
+  {
+    digitalWriteFast(rPin, LED_ON);
+    digitalWriteFast(gPin, LED_OFF);
+    digitalWriteFast(bPin, LED_OFF);
+  }
+  void LedsRGB::prenderGreen()
+  {
+    digitalWriteFast(rPin, LED_OFF);
+    digitalWriteFast(gPin, LED_ON);
+    digitalWriteFast(bPin, LED_OFF);
+  }
+  void LedsRGB::prenderAzul()
+  {
+    digitalWriteFast(rPin, LED_OFF);
+    digitalWriteFast(gPin, LED_OFF);
+    digitalWriteFast(bPin, LED_ON);
+  }
+  void LedsRGB::prenderRosado()
+  {
+    digitalWriteFast(rPin, LED_ON);
+    digitalWriteFast(gPin, LED_OFF);
+    digitalWriteFast(bPin, LED_ON);
+  }
+  void LedsRGB::prenderAmarillo()
+  {
+    digitalWriteFast(rPin, LED_ON);
+    digitalWriteFast(gPin, LED_ON);
+    digitalWriteFast(bPin, LED_OFF);
+  }
+  void LedsRGB::prenderAzulClaro()
+  {
+    digitalWriteFast(rPin, LED_OFF);
+    digitalWriteFast(gPin, LED_ON);
+    digitalWriteFast(bPin, LED_ON);
+  }
+  void LedsRGB::prenderApagado()
+  {
+    digitalWriteFast(rPin, LED_OFF);
+    digitalWriteFast(gPin, LED_OFF);
+    digitalWriteFast(bPin, LED_OFF);
   }
 
 } // namespace Lechugator

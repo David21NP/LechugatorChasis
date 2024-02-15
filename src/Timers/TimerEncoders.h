@@ -10,13 +10,15 @@ namespace Lechugator
   {
   private:
     // STM32_ISR_Timer ISR_Timer;
-    HardwareTimer TimerEncoder = HardwareTimer(TIMER_ENCODER_DEF);
+    HardwareTimer *timerEncoder = new HardwareTimer(TIMER_ENCODER_DEF);
   public:
     TimerEncoders();
     ~TimerEncoders();
 
     void init();
     void run();
+
+    HardwareTimer * getTimerRef();
   };
   
 } // namespace Lechugator

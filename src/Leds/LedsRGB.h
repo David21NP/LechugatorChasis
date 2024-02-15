@@ -26,6 +26,13 @@ namespace Lechugator
     void init();
 
     void prenderBlanco();
+    void prenderRojo();
+    void prenderGreen();
+    void prenderAzul();
+    void prenderRosado();
+    void prenderAmarillo();
+    void prenderAzulClaro();
+    void prenderApagado();
   };
 
 } // namespace Lechugator

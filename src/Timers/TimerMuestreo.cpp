@@ -12,11 +12,13 @@ namespace Lechugator
 
   void TimerMuestreo::init()
   {
-    if (
-        ITimerEncoder.attachInterruptInterval(
-            // HW_TIMER_INTERVAL_US,
-            TIMER_ENCODER_INTERVAL_MS * 1000,
-            std::bind(&TimerMuestreo::timerHandler, this)))
+    const bool timerConfigured = ITimerEncoder.attachInterruptInterval(
+        // HW_TIMER_INTERVAL_US,
+        TIMER_MUESTREO_INTERVAL_MS * 1000,
+        std::bind(&TimerMuestreo::timerHandler, this));
+    #if DEBUG_LECHUGATOR
+    Serial.println("========== TIMER MUESTREO ===============");
+    if (timerConfigured)
     {
       Serial.print((String)"Starting ITimer1 OK, millis() = " + millis());
       Serial.println();
@@ -25,6 +27,8 @@ namespace Lechugator
     {
       Serial.println(F("Can't set ITimer1. Select another freq. or timer"));
     }
+    Serial.println("========================================");
+    #endif
   }
 
   void TimerMuestreo::timerHandler()
@@ -39,12 +43,19 @@ namespace Lechugator
   {
     for (auto &&motor : motors)
     {
-      Serial.print(motor.getDigitalController().getDesiredValue());
-      Serial.print(" ");
-      Serial.print(motor.getEncoder().getW());
-      Serial.print(" ");
+      motor.getEncoder().filterFreq();
     }
+    Serial.print(motors.at(3).getDigitalController().getDesiredValue());
+    Serial.print(" ");
+    Serial.print(motors.at(3).getEncoder().getW());
+    // Serial.print(" ");
+    // Serial.print(motors.at(3).getDigitalController().getControlSignal());
     Serial.println();
+
+    // Serial.print(motors.at(3).getDigitalController().getDesiredValue());
+    // Serial.print(" ");
+    // Serial.print(motors.at(3).getEncoder().getW());
+    // Serial.println();
   }
 
   void TimerMuestreo::moveMotor()

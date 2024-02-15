@@ -30,7 +30,7 @@ namespace Lechugator
   private:
     unsigned int motor_num = 0;
     uint8_t maxPwm = 100;
-    uint8_t minPwm = 100;
+    uint8_t minPwm = 0;
     uint8_t dir = 0;
 
     Encoder encoder;
@@ -63,7 +63,7 @@ namespace Lechugator
     Encoder &getEncoder();
     DigitalController &getDigitalController();
 
-    void init();
+    void init(HardwareTimer *_timerReader);
 
     void move(const int8_t &_currPwm);
     void moveRpm(const double &_rpm);
