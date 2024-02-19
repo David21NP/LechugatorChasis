@@ -43,7 +43,7 @@ namespace Lechugator
     digitalWriteFast(gPin, LED_OFF);
     digitalWriteFast(bPin, LED_OFF);
   }
-  void LedsRGB::prenderGreen()
+  void LedsRGB::prenderVerde()
   {
     digitalWriteFast(rPin, LED_OFF);
     digitalWriteFast(gPin, LED_ON);

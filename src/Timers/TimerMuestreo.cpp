@@ -45,12 +45,13 @@ namespace Lechugator
     {
       motor.getEncoder().filterFreq();
     }
-    Serial.print(motors.at(3).getDigitalController().getDesiredValue());
-    Serial.print(" ");
-    Serial.print(motors.at(3).getEncoder().getW());
-    // Serial.print(" ");
+    // // Serial.print(motors.at(3).getDigitalController().getDesiredValue());
+    // // Serial.print(" ");
+    // // Serial.print(motors.at(3).getEncoder().getW());
     // Serial.print(motors.at(3).getDigitalController().getControlSignal());
-    Serial.println();
+    // // Serial.print(" ");
+    // // Serial.print(motors.at(3).getDigitalController().getControlSignal());
+    // Serial.println();
 
     // Serial.print(motors.at(3).getDigitalController().getDesiredValue());
     // Serial.print(" ");

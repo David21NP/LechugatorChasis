@@ -114,6 +114,8 @@ namespace Lechugator
     if (digitalController.getDesiredValue() == 0.0)
     {
       move(0);
+      // digitalController.calcControlSignal(encoder.getW());
+      digitalController.resetControlSignal();
     } else {
       move((uint8_t)fabs(digitalController.calcControlSignal(encoder.getW())));
     }

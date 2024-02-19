@@ -27,7 +27,7 @@ namespace Lechugator
 
     void prenderBlanco();
     void prenderRojo();
-    void prenderGreen();
+    void prenderVerde();
     void prenderAzul();
     void prenderRosado();
     void prenderAmarillo();

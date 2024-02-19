@@ -29,6 +29,8 @@ namespace Lechugator
     void setDesiredValue(const double &_desiredValue);
     double getDesiredValue();
     double getControlSignal();
+    void setControlSignal(const double &_val);
+    void resetControlSignal();
   };
   
 } // namespace Lechugator

@@ -92,5 +92,13 @@ namespace Lechugator
   {
     return uSignal[0];
   }
+  void DigitalController::setControlSignal(const double &_val)
+  {
+    uSignal[0] = _val;
+  }
+  void DigitalController::resetControlSignal()
+  {
+    setControlSignal(0.0);
+  }
 
 } // namespace Lechugator
